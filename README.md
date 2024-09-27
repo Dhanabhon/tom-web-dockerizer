@@ -44,9 +44,9 @@ You can use the shell script `add_website.sh` to add a new website.
 
 #### Example:
 
-    ```bash
-    ./add_website.sh mywebsite.com nginx mariadb yes 512M 2048M 2048M
-    ```
+```bash
+./add_website.sh mywebsite.com nginx mariadb yes 512M 2048M 2048M
+```
 
 This command will create a WordPress site with MariaDB and set the PHP memory limit to 512M, upload max file size to 2048M, and post max size to 2048M.
 
