@@ -27,7 +27,7 @@ Tom's Web Dockerizer is a flexible and powerful tool that allows users to deploy
     ```bash
     docker-compose up -d
 
-## Usage
+Usage -----
 ### To add a new website:
 You can use the shell script `add_website.sh` to add a new website.
     ```bash
@@ -40,7 +40,7 @@ You can use the shell script `add_website.sh` to add a new website.
 - [UPLOAD_MAX_FILESIZE]: Maximum file upload size (optional, default: 1024M)
 - [POST_MAX_SIZE]: Maximum post size (optional, default: 1024M)
 
-Example:
+#### Example:
     ```bash
     ./add_website.sh mywebsite.com nginx mariadb yes 512M 2048M 2048M
 
