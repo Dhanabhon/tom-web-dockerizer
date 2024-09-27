@@ -42,7 +42,7 @@ You can use the shell script `add_website.sh` to add a new website.
 
 #### Example:
     ./add_website.sh mywebsite.com nginx mariadb yes 512M 2048M 2048M
-    
+
 This command will create a WordPress site with MariaDB and set the PHP memory limit to 512M, upload max file size to 2048M, and post max size to 2048M.
 
 ## Automatic HTTPS
@@ -52,7 +52,7 @@ Nginx Proxy will automatically handle the reverse proxy and SSL certificates for
 If you're using MariaDB or MySQL, phpMyAdmin will be automatically installed and accessible via a subdomain:
 
 ```
-    http://phpmyadmin.mywebsite.com/
+http://phpmyadmin.mywebsite.com/
 ```
 
 ## Customization
