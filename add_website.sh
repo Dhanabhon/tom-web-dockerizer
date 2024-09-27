@@ -15,9 +15,11 @@ MEMORY_LIMIT=${5:-256M}
 UPLOAD_MAX_FILESIZE=${6:-1024M}
 POST_MAX_SIZE=${7:-1024M}
 
-# Display welcome message and project name
+# Display welcome message
 echo "-----------------------------------------------"
 echo "Welcome to $PROJECT_NAME!"
+echo "Version: $VERSION"
+echo "Release Date: $VERSION_DATE"
 echo "We're setting up your website: $SITE_NAME"
 echo "-----------------------------------------------"
 
