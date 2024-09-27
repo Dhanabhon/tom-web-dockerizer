@@ -27,7 +27,7 @@ Tom's Web Dockerizer is a flexible and powerful tool that allows users to deploy
     ```bash
     docker-compose up -d
 
-Usage -----
+## Usage
 ### To add a new website:
 You can use the shell script `add_website.sh` to add a new website.
     ```bash
