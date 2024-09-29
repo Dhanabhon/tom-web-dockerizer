@@ -9,6 +9,8 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /usr/share/nginx/html:/usr/share/nginx/html:rw
+      - /etc/nginx/certs:/etc/nginx/certs:rw
     restart: always
 
   letsencrypt:
@@ -16,6 +18,7 @@ services:
     container_name: nginx-proxy-letsencrypt
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /usr/share/nginx/html:/usr/share/nginx/html:rw
       - /etc/nginx/certs:/etc/nginx/certs:rw
     environment:
       - NGINX_PROXY_CONTAINER=nginx-proxy
