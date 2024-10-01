@@ -1,25 +1,83 @@
 version: '3'
 
 services:
-  proxy:
-    image: jwilder/nginx-proxy
-    container_name: nginx-proxy
+  openlitespeed:
+    image: litespeedtech/openlitespeed:latest
+    container_name: openlitespeed
+    ports:
+      - "80:80"
+      - "443:443"
+      - "7080:7080" # OpenLiteSpeed admin
+    volumes:
+      - ./html:/var/www/vhosts/${DOMAIN}/html
+      - ./conf:/usr/local/lsws/conf
+      - ./certs:/etc/letsencrypt
+    environment:
+      - OLS_DB_NAME=${DB_NAME}
+      - OLS_DB_USER=${DB_USER}
+      - OLS_DB_PASS=${DB_PASSWORD}
+      - OLS_PHP_MEMORY_LIMIT=256M
+      - OLS_PHP_UPLOAD_MAX_FILESIZE=1024M
+      - OLS_PHP_POST_MAX_SIZE=1024M
+    depends_on:
+      - mariadb
+      - traefik
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    volumes:
+      - ./html/phpmyadmin:/var/www/html
+    depends_on:
+      - mariadb
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.${DOMAIN}`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+    ports:
+      - "8080:80"
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certs:/etc/letsencrypt
+      - ./html:/var/www/vhosts/${DOMAIN}/html
+    command: certonly --webroot -w /var/www/vhosts/${DOMAIN}/html -d ${DOMAIN} -d phpmyadmin.${DOMAIN} --email admin@${DOMAIN} --agree-tos --non-interactive
+
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=dev@${DOMAIN}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - /usr/share/nginx/html:/usr/share/nginx/html:rw
-      - /etc/nginx/certs:/etc/nginx/certs:rw
-    restart: always
-
-  letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: nginx-proxy-letsencrypt
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /usr/share/nginx/html:/usr/share/nginx/html:rw
-      - /etc/nginx/certs:/etc/nginx/certs:rw
-    environment:
-      - NGINX_PROXY_CONTAINER=nginx-proxy
-    restart: always
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
