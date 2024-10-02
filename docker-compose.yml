@@ -4,7 +4,7 @@ services:
     image: litespeedtech/openlitespeed:latest
     container_name: openlitespeed
     ports:
-      - "80:80"
+      - "8080:80"
       - "443:443"
       - "7080:7080" # OpenLiteSpeed admin
     volumes:
@@ -70,14 +70,14 @@ services:
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.address=:8081"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.email=dev@${DOMAIN}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
-      - "80:80"
+      - "8081:80"
       - "443:443"
     volumes:
       - ./letsencrypt:/letsencrypt
