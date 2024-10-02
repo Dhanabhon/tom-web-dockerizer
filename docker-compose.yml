@@ -5,7 +5,7 @@ services:
     container_name: openlitespeed
     ports:
       - "8080:80"
-      - "443:443"
+      - "8443:443"
       - "7080:7080" # OpenLiteSpeed admin
     volumes:
       - ./html:/var/www/vhosts/${DOMAIN}/html
