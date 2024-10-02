@@ -49,12 +49,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dev.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.services.dev.loadbalancer.server.port=80"
       - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.${DOMAIN}`)"
       - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
       - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
     ports:
-      - "8080:80"
+      - "8082:80"
 
   certbot:
     image: certbot/certbot
